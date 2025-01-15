@@ -1,8 +1,12 @@
+:root {
+  background-color: #7f8d96;
+}
+
 #root {
-  max-width: 1280px;
   margin: 8rem auto;
   padding: 2rem;
   text-align: center;
+  background-color: #7f8d96;
 }
 
 .logo {
@@ -10,12 +14,6 @@
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.health:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
 @keyframes logo-spin {
@@ -38,5 +36,5 @@
 }
 
 .read-the-docs {
-  color: #888;
+  color: white;
 }

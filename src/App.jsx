@@ -34,6 +34,7 @@ function App() {
         {/* Route for the signup page */}
         <Route path='/signup' element={<Signup />} />
         <Route path='/tabs' element={<Tabs />} />
+        {/* <Route path='/details/:type' element={<ExerciseDetails  />} /> */}
       </Routes>
     </Router>
   );

@@ -6,15 +6,37 @@ import userRoutes from './routes/userRoutes.js';
 import oauthRoutes from './routes/oauthRoutes.js';
 import exerciseRoutes from './routes/exerciseRoutes.js';
 
-// PORT defined in .env or defaults to 4000
-const PORT = process.env.PORT || 4000;
+// import MONGO_URI from '.env';
+
+// PORT defined in .env or defaults to 3000
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+console.log('JWT_SECRET:', process.env.JWT_SECRET);
+
 // Enable CORS (Cross-Origin Resource Sharing)
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend's URL
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Allow cookies and credentials
+  })
+);
+
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 
 // Routes
 app.use('/api/user', userRoutes); // normal user signup/login
@@ -44,23 +66,25 @@ app.use((err, _req, res) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-// MongoDB connection string from .env
-const { MONGO_URI } = process.env;
+// // MongoDB connection string from .env
+const MONGO_URI =
+  'mongodb+srv://oliverafajardoucb1:AFrHIEwxaya01phE@cluster0.boihq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {
-  console.error('MONGO_URI not defined in .env file');
+  console.error(MONGO_URI);
   process.exit(1);
 }
 
 // MongoClientOptions object to set the Stable API version
-const clientOptions = {
-  serverApi: { version: '1', strict: true, deprecationErrors: true },
-};
+// const clientOptions = {
+//   serverApi: { version: '1', strict: true, deprecationErrors: true },
+// };
 
 // Start the server after connecting to MongoDB
 async function startServer() {
   try {
     // Attempt to connect to MongoDB
-    await mongoose.connect(MONGO_URI, clientOptions);
+    await mongoose.connect(MONGO_URI);
     console.log('Successfully connected to MongoDB!');
 
     // If DB connection is successful, start the server
