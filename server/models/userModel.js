@@ -14,6 +14,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
     lowercase: true,
+    // validate: {
+    //   validator: function (v) {
+    //     return /\S+@\S+\.\S+/.test(v);
+    //   },
+    //   message: (props) => `${props.value} is not a valid email.`,
+    // },
   },
   password: {
     type: String,
@@ -21,19 +27,19 @@ const userSchema = new mongoose.Schema({
   },
 
   // For GitHub OAuth
-  githubId: {
-    type: String,
-    unique: true,
-  },
-  avatarUrl: {
-    type: String,
-  },
+  // githubId: {
+  //   type: String,
+  //   unique: true,
+  // },
+  // avatarUrl: {
+  //   type: String,
+  // },
 
   // Timestamps
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  // createdAt: {
+  //   type: Date,
+  //   default: Date.now,
+  // },
 });
 
 userSchema.pre("save", async function (next) {
@@ -50,5 +56,6 @@ userSchema.pre("save", async function (next) {
     next(error); // Pass any errors to the next middleware
   }
 });
+
 const User = mongoose.model("User", userSchema);
 export default User;

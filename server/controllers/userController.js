@@ -5,25 +5,36 @@ import jwt from 'jsonwebtoken';
 const userController = {};
 
 userController.registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  console.log('Registering user:', { name, email });
+  
+
+  try {
+    const { name, email, password } = req.body;
+    
+    console.log('Registering user:', { name, email });
 
   if (!name || !email || !password) {
     return res
       .status(400)
       .json({ error: 'Name, email, and password are required' });
   }
-
-  try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'Email is already registered' });
     }
 
-    const user = await User.create({ name, email, password });
-    return res
-      .status(201)
-      .json({ message: 'User registered successfully', user });
+    // const user = await User.create({ name, email, password });
+    const user = new User({name,
+      email,
+      password,
+    });
+
+    await user.save();
+
+    return res.status(201).json({ message: 'User registered successfully', user });
+
+    // res.locals.newUser = user;
+    // next()
+
   } catch (error) {
     console.error('Error registering user:', error);
     return res
@@ -31,6 +42,8 @@ userController.registerUser = async (req, res) => {
       .json({ error: 'Failed to register user', details: error.message });
   }
 };
+
+// Check if user and password are correct 
 
 userController.loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -63,6 +76,7 @@ userController.loginUser = async (req, res) => {
       .json({ error: 'Failed to log in', details: error.message });
   }
 };
+
 
 userController.getUserInfo = async (req, res) => {
   const { userId } = req;
