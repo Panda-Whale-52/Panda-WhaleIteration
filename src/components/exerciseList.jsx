@@ -14,33 +14,43 @@ const ExerciseList = () => {
     
   });
 
-  useEffect(() => {
-    const fetchExercises = async () => {
-      const token = localStorage.getItem('token');
-      console.log(token)
-      try {
-        const response = await fetch(`${config.baseURL}/exercise`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+  //Load the page, fetch to the datebase
+    //if null, render message, "add"
+    //else render the contents of the database by passing its contents down into ExerciseItems
+  
+  //Add Button
+    //add the contents to the database
+    //rerender the page by calling the database after it has has had the contents added to it. 
+    //should show all contents at expense - fetch requests to server, expensive
 
-        if (!response.ok) {
-          console.error('Failed to fetch exercises');
-          return;
-        }
+  //First to load - this will be called when the add button is clicked.
+  // useEffect(() => {
+  //   const fetchExercises = async () => {
+  //     const token = localStorage.getItem('token');
+  //     console.log(token)
+  //     try {
+  //       const response = await fetch(`${config.baseURL}/exercise`, {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `Bearer ${token}`,
+  //         },
+  //       });
 
-        const data = await response.json();
-        setExercises(data.exercises || []); // Set the exercises from the response
-      } catch (error) {
-        console.error('Error fetching exercises:', error);
-      }
-    };
+  //       if (!response.ok) {
+  //         console.error('Failed to fetch exercises');
+  //         return;
+  //       }
 
-    fetchExercises();
-  }, []);
+  //       const data = await response.json();
+  //       setExercises(data.exercises || []); // Set the exercises from the response
+  //     } catch (error) {
+  //       console.error('Error fetching exercises:', error);
+  //     }
+  //   };
+
+  //   fetchExercises();
+  // }, []); //Dependency array, if empty on load? handleAddExercise
 
 
   const handleAddExercise = async () => {
@@ -76,14 +86,19 @@ const ExerciseList = () => {
       }
 
       const addedExercise = await response.json();
-      setExercises(prevExercises => [...prevExercises, addedExercise]);
+      setExercises(prevExercises => {
+        console.log(prevExercises);
+        return[...prevExercises, addedExercise]});
+
+      
+
+
 
       // setExercises(prevExercises => 
       //   prevExercises.map(ex => 
       //     ex._id === exerciseData._id ? addedExercise : ex
       //   )
       // );
-      
     } catch (error) {
       console.error('Error adding exercise:', error);
     }
