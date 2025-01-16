@@ -6,15 +6,6 @@ import * as db from './utils/db.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
-<<<<<<< HEAD
-
-// Error handling middleware to catch and log JWT errors
-// app.use((err, req, res, next) => {
-//   console.error('Server Error:', err);
-//   res.status(500).json({ error: err.message });
-// });
-=======
->>>>>>> dev
 
 // creating Express app for testing
 const app = express();
