@@ -1,5 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+
+
+//This is deprecated and is not in use
+
+
 import '../styles/exerciseCard.css';
 import React from 'react';
 import Card from 'react-bootstrap/Card';
