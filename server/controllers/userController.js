@@ -1,31 +1,49 @@
 import User from '../models/userModel.js';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const userController = {};
 
 userController.registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  console.log('Registering user:', { name, email });
-
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Name, email, and password are required' });
-  }
+  
 
   try {
+    const { name, email, password } = req.body;
+    
+    console.log('Registering user:', { name, email });
+
+  if (!name || !email || !password) {
+    return res
+      .status(400)
+      .json({ error: 'Name, email, and password are required' });
+  }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'Email is already registered' });
     }
 
+    // const user = await User.create({ name, email, password });
+    const user = new User({name,
+      email,
+      password,
+    });
 
-    const user = await User.create({ name, email, password });
+    await user.save();
+
     return res.status(201).json({ message: 'User registered successfully', user });
+
+    // res.locals.newUser = user;
+    // next()
+
   } catch (error) {
     console.error('Error registering user:', error);
-    return res.status(500).json({ error: 'Failed to register user', details: error.message });
+    return res
+      .status(500)
+      .json({ error: 'Failed to register user', details: error.message });
   }
 };
+
+// Check if user and password are correct 
 
 userController.loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -50,12 +68,19 @@ userController.loginUser = async (req, res) => {
       expiresIn: '1h',
     });
 
+    const decoded = jwt.decode(token);
+console.log('Decoded JWT Payload:', decoded);
+
+
     return res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
     console.error('Error logging in user:', error);
-    return res.status(500).json({ error: 'Failed to log in', details: error.message });
+    return res
+      .status(500)
+      .json({ error: 'Failed to log in', details: error.message });
   }
 };
+
 
 userController.getUserInfo = async (req, res) => {
   const { userId } = req;
@@ -70,7 +95,9 @@ userController.getUserInfo = async (req, res) => {
     return res.status(200).json({ message: 'User info retrieved', user });
   } catch (error) {
     console.error('Error fetching user info:', error);
-    return res.status(500).json({ error: 'Failed to fetch user info', details: error.message });
+    return res
+      .status(500)
+      .json({ error: 'Failed to fetch user info', details: error.message });
   }
 };
 
@@ -87,7 +114,9 @@ userController.deleteUser = async (req, res) => {
     return res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {
     console.error('Error deleting user:', error);
-    return res.status(500).json({ error: 'Failed to delete user', details: error.message });
+    return res
+      .status(500)
+      .json({ error: 'Failed to delete user', details: error.message });
   }
 };
 
