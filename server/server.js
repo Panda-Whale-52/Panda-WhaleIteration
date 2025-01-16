@@ -67,20 +67,6 @@ app.use((err, _req, res) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-// // MongoDB connection string from .env
-// const MONGO_URI =
-//   'mongodb+srv://oliverafajardoucb1:AFrHIEwxaya01phE@cluster0.boihq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-// // const MONGO_URI = process.env.MONGO_URI;
-// if (!MONGO_URI) {
-//   console.error(MONGO_URI);
-//   process.exit(1);
-// }
-
-// MongoClientOptions object to set the Stable API version
-// const clientOptions = {
-//   serverApi: { version: '1', strict: true, deprecationErrors: true },
-// };
-
 // Start the server after connecting to MongoDB
 async function startServer() {
   try {

@@ -40,11 +40,20 @@ const LoginPage = () => {
           });
 
           const data = await response.json();
+          // console.log(data.token)
+          let logIn = data.token
+          // console.log(logIn)
+
+          localStorage.setItem("token", logIn);
+          // let lastname = localStorage.getItem("token");
+          // console.log(lastname)
+  
 
           if (!response.ok)
           {
               throw new Error('Failed to verify user');
           }
+          
           navigate('/tabs')
           
       }

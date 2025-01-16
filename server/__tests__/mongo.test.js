@@ -6,8 +6,6 @@ import User from '../models/userModel.js';
 
 const request = supertest(app);
 
-// const TEST_MONGODB_URI = process.env.TEST_MONGODB_URI || 'mongodb+srv://fabianosantin:37NDFZdJysWbxRsHGiVY@cluster0.zecqa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-
 // Use a separate test database
 const TEST_MONGODB_URI =
   'mongodb+srv://fabianosantin:37NDFZdJysWbxRsHGiVY@cluster0.zecqa.mongodb.net/project_iter_testing?retryWrites=true&w=majority';
@@ -33,62 +31,71 @@ afterAll(async () => {
   await server.close();
 });
 
-describe('E2E User Authentication Tests', () => {
-  beforeEach(async () => {
-    // Clean up before each test
-    await User.deleteMany({});
+describe('MongoDB Integration Tests', () => {
+  describe('Database Connection', () => {
+    it('should connect to test database', async () => {
+      // Your existing beforeAll logic can be moved here
+      expect(mongoose.connection.readyState).toBe(1); // 1 means 'connected'
+    });
   });
 
-  // TESTING REGISTRATION AND LOG IN
-  it('should register and login a user in a real database', async () => {
-    // Test user registration
-    const userData = {
-      name: 'E2E Test User',
-      email: 'e2e@test.com',
-      password: 'Password123$',
-    };
-
-    const registerResponse = await request
-      .post('/api/user/register')
-      .send(userData);
-
-    expect(registerResponse.status).toBe(201);
-
-    // Verify user was actually saved in database
-    const savedUser = await User.findOne({ email: userData.email });
-    expect(savedUser).toBeTruthy();
-    expect(savedUser.name).toBe(userData.name);
-
-    // Test login
-    const loginResponse = await request.post('/api/user/login').send({
-      email: userData.email,
-      password: userData.password,
+  describe('E2E User Authentication Tests', () => {
+    beforeEach(async () => {
+      // Clean up before each test
+      await User.deleteMany({});
     });
 
-    expect(loginResponse.status).toBe(200);
-    expect(loginResponse.body.token).toBeDefined();
-  });
+    // TESTING REGISTRATION AND LOG IN
+    it('should register and login a user in a real database', async () => {
+      // Test user registration
+      const userData = {
+        name: 'E2E Test User',
+        email: 'e2e@test.com',
+        password: 'Password123$',
+      };
 
-  it('should be blocked from accessing by trying a wrong password', async () => {
-    // Test user registration
-    const userData = {
-      name: 'Wrong User',
-      email: 'wrong@test.com',
-      password: 'wrongPass$',
-    };
+      const registerResponse = await request
+        .post('/api/user/register')
+        .send(userData);
 
-    // Verify user was actually saved in database
-    const savedUser = await User.findOne({ email: userData.email });
-    expect(savedUser).toBeFalsy();
-    // expect(savedUser.name).toBe(userData.name);
+      expect(registerResponse.status).toBe(201);
 
-    // Test login
-    const loginResponse = await request.post('/api/user/login').send({
-      email: userData.email,
-      password: userData.password,
+      // Verify user was actually saved in database
+      const savedUser = await User.findOne({ email: userData.email });
+      expect(savedUser).toBeTruthy();
+      expect(savedUser.name).toBe(userData.name);
+
+      // Test login
+      const loginResponse = await request.post('/api/user/login').send({
+        email: userData.email,
+        password: userData.password,
+      });
+
+      expect(loginResponse.status).toBe(200);
+      expect(loginResponse.body.token).toBeDefined();
     });
 
-    expect(loginResponse.status).toBe(404);
-    expect(loginResponse.body.error).toBe('User not found');
+    it('should be blocked from accessing by trying a wrong password', async () => {
+      // Test user registration
+      const userData = {
+        name: 'Wrong User',
+        email: 'wrong@test.com',
+        password: 'wrongPass$',
+      };
+
+      // Verify user was actually saved in database
+      const savedUser = await User.findOne({ email: userData.email });
+      expect(savedUser).toBeFalsy();
+      // expect(savedUser.name).toBe(userData.name);
+
+      // Test login
+      const loginResponse = await request.post('/api/user/login').send({
+        email: userData.email,
+        password: userData.password,
+      });
+
+      expect(loginResponse.status).toBe(404);
+      expect(loginResponse.body.error).toBe('User not found');
+    });
   });
 });
