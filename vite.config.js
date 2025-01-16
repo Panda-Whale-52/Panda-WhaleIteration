@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   test: {
+    setupFiles: './src/test/setup.js',
     environment: 'jsdom', // pure JavaScript implementation of the DOM that runs in Node.js
     globals: true, // allows use of describe, it, expect without importing
   },
