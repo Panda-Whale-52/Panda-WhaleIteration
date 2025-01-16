@@ -24,36 +24,37 @@ const ExerciseList = () => {
     //should show all contents at expense - fetch requests to server, expensive
 
   //First to load - this will be called when the add button is clicked.
-  // useEffect(() => {
-  //   const fetchExercises = async () => {
-  //     const token = localStorage.getItem('token');
-  //     console.log(token)
-  //     try {
-  //       const response = await fetch(`${config.baseURL}/exercise`, {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': `Bearer ${token}`,
-  //         },
-  //       });
+  const fetchExercises = async () => {
+    const token = localStorage.getItem('token');
+    console.log(token)
+    try {
+      const response = await fetch(`${config.baseURL}/exercise`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
 
-  //       if (!response.ok) {
-  //         console.error('Failed to fetch exercises');
-  //         return;
-  //       }
+      if (!response.ok) {
+        console.error('Failed to fetch exercises');
+        return;
+      }
 
-  //       const data = await response.json();
-  //       setExercises(data.exercises || []); // Set the exercises from the response
-  //     } catch (error) {
-  //       console.error('Error fetching exercises:', error);
-  //     }
-  //   };
-
-  //   fetchExercises();
-  // }, []); //Dependency array, if empty on load? handleAddExercise
+      const data = await response.json();
+      setExercises(data.exercises || []); // Set the exercises from the response
+    } catch (error) {
+      console.error('Error fetching exercises:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchExercises(); //move fetchExercises down 
+  }, []); //Dependency array, if empty on load? handleAddExercise
 
 
   const handleAddExercise = async () => {
+    
     const exerciseData = {
       ...newExercise,
       Name: newExercise.Name,
@@ -64,6 +65,7 @@ const ExerciseList = () => {
       
       //2024-05-22T12:19:33.038Z 
     };
+    
 
     setExercises([...exercises, exerciseData]);
     setNewExercise({ Name: '', ActivityDescription: '',  });
@@ -85,14 +87,11 @@ const ExerciseList = () => {
         return;
       }
 
+      fetchExercises()
+
       const addedExercise = await response.json();
-      setExercises(prevExercises => {
-        console.log(prevExercises);
-        return[...prevExercises, addedExercise]});
 
-      
-
-
+      setExercises(prevExercises => [...prevExercises, addedExercise]);
 
       // setExercises(prevExercises => 
       //   prevExercises.map(ex => 
@@ -103,6 +102,9 @@ const ExerciseList = () => {
       console.error('Error adding exercise:', error);
     }
   };
+
+
+
 
   const handleEditExercise = async () => {
     const updatedExercise = {
