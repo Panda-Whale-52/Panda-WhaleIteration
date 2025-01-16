@@ -18,13 +18,12 @@ console.log('JWT_SECRET:', process.env.JWT_SECRET);
 // Enable CORS (Cross-Origin Resource Sharing)
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend's URL
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: 'http://localhost:5173', // Your frontend's URL
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, // Allow cookies and credentials
   })
 );
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,7 +35,6 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
-
 
 // Routes
 app.use('/api/user', userRoutes); // normal user signup/login
@@ -106,4 +104,9 @@ process.on('SIGINT', async () => {
 });
 
 // Initiate the startup sequence
-startServer();
+// startServer();
+if (process.env.NODE_ENV !== 'test') {
+  startServer();
+}
+
+export default app;
