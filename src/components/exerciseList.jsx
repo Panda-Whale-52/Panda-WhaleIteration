@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import  { useState, useEffect } from 'react';
 import config from '../config';
 import '../styles/exerciseList.css';
 import ExerciseItem from './ExerciseItem';
@@ -13,6 +13,34 @@ const ExerciseList = () => {
     ActivityDescription: '',
     
   });
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      const token = localStorage.getItem('token');
+      console.log(token)
+      try {
+        const response = await fetch(`${config.baseURL}/exercise`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.error('Failed to fetch exercises');
+          return;
+        }
+
+        const data = await response.json();
+        setExercises(data.exercises || []); // Set the exercises from the response
+      } catch (error) {
+        console.error('Error fetching exercises:', error);
+      }
+    };
+
+    fetchExercises();
+  }, []);
 
 
   const handleAddExercise = async () => {
@@ -30,13 +58,14 @@ const ExerciseList = () => {
     setExercises([...exercises, exerciseData]);
     setNewExercise({ Name: '', ActivityDescription: '',  });
     setShowPopup(false);
+    const token = localStorage.getItem('token');
 
     try {
       const response = await fetch(`${config.baseURL}/exercise`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.token}`
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(exerciseData),
       });
