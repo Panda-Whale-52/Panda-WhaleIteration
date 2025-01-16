@@ -1,27 +1,34 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import config from '../config';
 import '../styles/exerciseList.css';
 import ExerciseItem from './ExerciseItem';
+
 
 const ExerciseList = () => {
   const [exercises, setExercises] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [editingExercise, setEditingExercise] = useState(null);
   const [newExercise, setNewExercise] = useState({
-    exercise: '',
-    description: ''
+    Name: '',
+    ActivityDescription: '',
+    
   });
+
 
   const handleAddExercise = async () => {
     const exerciseData = {
       ...newExercise,
-      date: new Date().toISOString(),
-      userId: 'currentUserId', //this will be supplanted with the user id from the token 
-      _id: Date.now().toString()
+      Name: newExercise.Name,
+      ActivityDescription: newExercise.ActivityDescription,
+      // date: new Date().toISOString(),
+      // userId: 'currentUserId', //this will be supplanted with the user id from the token 
+      // _id: String(Date.now())
+      
+      //2024-05-22T12:19:33.038Z 
     };
 
     setExercises([...exercises, exerciseData]);
-    setNewExercise({ exercise: '', description: '' });
+    setNewExercise({ Name: '', ActivityDescription: '',  });
     setShowPopup(false);
 
     try {
@@ -40,11 +47,14 @@ const ExerciseList = () => {
       }
 
       const addedExercise = await response.json();
-      setExercises(prevExercises => 
-        prevExercises.map(ex => 
-          ex._id === exerciseData._id ? addedExercise : ex
-        )
-      );
+      setExercises(prevExercises => [...prevExercises, addedExercise]);
+
+      // setExercises(prevExercises => 
+      //   prevExercises.map(ex => 
+      //     ex._id === exerciseData._id ? addedExercise : ex
+      //   )
+      // );
+      
     } catch (error) {
       console.error('Error adding exercise:', error);
     }
@@ -116,8 +126,8 @@ const ExerciseList = () => {
   const startEditing = (exercise) => {
     setEditingExercise(exercise);
     setNewExercise({
-      exercise: exercise.exercise,
-      description: exercise.description
+      Name: exercise.exercise,
+      ActivityDescription: exercise.description
     });
     setShowPopup(true);
   };
@@ -130,7 +140,7 @@ const ExerciseList = () => {
           className="add-exercise-btn"
           onClick={() => {
             setEditingExercise(null);
-            setNewExercise({ exercise: '', description: '' });
+            setNewExercise({ Name: '', ActivityDescription: '' });
             setShowPopup(true);
           }}
         >
@@ -139,10 +149,10 @@ const ExerciseList = () => {
       </div>
 
       <div className="exercise-list">
-        {exercises.map((exercise) => (
+        {exercises.map((exerciseData) => (
           <ExerciseItem
-            key={exercise._id}
-            exercise={exercise}
+            key={exerciseData._id}
+            exercise={exerciseData}
             onEdit={startEditing}
             onDelete={handleDelete}
           />
@@ -158,10 +168,10 @@ const ExerciseList = () => {
               <input
                 type="text"
                 id="exercise"
-                value={newExercise.exercise}
+                value={newExercise.Name}
                 onChange={(e) => setNewExercise({
                   ...newExercise,
-                  exercise: e.target.value
+                  Name: e.target.value
                 })}
               />
             </div>
@@ -169,10 +179,10 @@ const ExerciseList = () => {
               <label htmlFor="description">Description:</label>
               <textarea
                 id="description"
-                value={newExercise.description}
+                value={newExercise.ActivityDescription}
                 onChange={(e) => setNewExercise({
                   ...newExercise,
-                  description: e.target.value
+                  ActivityDescription: e.target.value
                 })}
               />
             </div>
@@ -183,7 +193,7 @@ const ExerciseList = () => {
               <button onClick={() => {
                 setShowPopup(false);
                 setEditingExercise(null);
-                setNewExercise({ exercise: '', description: '' });
+                setNewExercise({ Name: '', ActivityDescription: '' });
               }}>Cancel</button>
             </div>
           </div>
