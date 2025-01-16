@@ -71,7 +71,7 @@ exerciseController.createExercise = async (req, res) => {
     await user.save(); // save() -> method of Mongodb
     
     const populatedUser = await User.findById(req.userId).populate('exercises');
-
+  
     res.status(201).json({message: 'Exercise created successfully',exercises: populatedUser.exercises});
   } catch (error) {
     console.error('Error creating exercise:', error);
