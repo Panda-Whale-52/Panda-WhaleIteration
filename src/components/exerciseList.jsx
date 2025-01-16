@@ -1,35 +1,81 @@
-import React, { useState } from 'react';
+import  { useState, useEffect } from 'react';
 import config from '../config';
 import '../styles/exerciseList.css';
 import ExerciseItem from './ExerciseItem';
+
 
 const ExerciseList = () => {
   const [exercises, setExercises] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [editingExercise, setEditingExercise] = useState(null);
   const [newExercise, setNewExercise] = useState({
-    exercise: '',
-    description: ''
+    Name: '',
+    ActivityDescription: '',
+    
   });
+
+  //Load the page, fetch to the datebase
+    //if null, render message, "add"
+    //else render the contents of the database by passing its contents down into ExerciseItems
+  
+  //Add Button
+    //add the contents to the database
+    //rerender the page by calling the database after it has has had the contents added to it. 
+    //should show all contents at expense - fetch requests to server, expensive
+
+  //First to load - this will be called when the add button is clicked.
+  // useEffect(() => {
+  //   const fetchExercises = async () => {
+  //     const token = localStorage.getItem('token');
+  //     console.log(token)
+  //     try {
+  //       const response = await fetch(`${config.baseURL}/exercise`, {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `Bearer ${token}`,
+  //         },
+  //       });
+
+  //       if (!response.ok) {
+  //         console.error('Failed to fetch exercises');
+  //         return;
+  //       }
+
+  //       const data = await response.json();
+  //       setExercises(data.exercises || []); // Set the exercises from the response
+  //     } catch (error) {
+  //       console.error('Error fetching exercises:', error);
+  //     }
+  //   };
+
+  //   fetchExercises();
+  // }, []); //Dependency array, if empty on load? handleAddExercise
+
 
   const handleAddExercise = async () => {
     const exerciseData = {
       ...newExercise,
-      date: new Date().toISOString(),
-      userId: 'currentUserId', //this will be supplanted with the user id from the token 
-      _id: Date.now().toString()
+      Name: newExercise.Name,
+      ActivityDescription: newExercise.ActivityDescription,
+      // date: new Date().toISOString(),
+      // userId: 'currentUserId', //this will be supplanted with the user id from the token 
+      // _id: String(Date.now())
+      
+      //2024-05-22T12:19:33.038Z 
     };
 
     setExercises([...exercises, exerciseData]);
-    setNewExercise({ exercise: '', description: '' });
+    setNewExercise({ Name: '', ActivityDescription: '',  });
     setShowPopup(false);
+    const token = localStorage.getItem('token');
 
     try {
       const response = await fetch(`${config.baseURL}/exercise`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.token}`
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(exerciseData),
       });
@@ -40,11 +86,19 @@ const ExerciseList = () => {
       }
 
       const addedExercise = await response.json();
-      setExercises(prevExercises => 
-        prevExercises.map(ex => 
-          ex._id === exerciseData._id ? addedExercise : ex
-        )
-      );
+      setExercises(prevExercises => {
+        console.log(prevExercises);
+        return[...prevExercises, addedExercise]});
+
+      
+
+
+
+      // setExercises(prevExercises => 
+      //   prevExercises.map(ex => 
+      //     ex._id === exerciseData._id ? addedExercise : ex
+      //   )
+      // );
     } catch (error) {
       console.error('Error adding exercise:', error);
     }
@@ -116,8 +170,8 @@ const ExerciseList = () => {
   const startEditing = (exercise) => {
     setEditingExercise(exercise);
     setNewExercise({
-      exercise: exercise.exercise,
-      description: exercise.description
+      Name: exercise.exercise,
+      ActivityDescription: exercise.description
     });
     setShowPopup(true);
   };
@@ -130,7 +184,7 @@ const ExerciseList = () => {
           className="add-exercise-btn"
           onClick={() => {
             setEditingExercise(null);
-            setNewExercise({ exercise: '', description: '' });
+            setNewExercise({ Name: '', ActivityDescription: '' });
             setShowPopup(true);
           }}
         >
@@ -139,10 +193,10 @@ const ExerciseList = () => {
       </div>
 
       <div className="exercise-list">
-        {exercises.map((exercise) => (
+        {exercises.map((exerciseData) => (
           <ExerciseItem
-            key={exercise._id}
-            exercise={exercise}
+            key={exerciseData._id}
+            exercise={exerciseData}
             onEdit={startEditing}
             onDelete={handleDelete}
           />
@@ -158,10 +212,10 @@ const ExerciseList = () => {
               <input
                 type="text"
                 id="exercise"
-                value={newExercise.exercise}
+                value={newExercise.Name}
                 onChange={(e) => setNewExercise({
                   ...newExercise,
-                  exercise: e.target.value
+                  Name: e.target.value
                 })}
               />
             </div>
@@ -169,10 +223,10 @@ const ExerciseList = () => {
               <label htmlFor="description">Description:</label>
               <textarea
                 id="description"
-                value={newExercise.description}
+                value={newExercise.ActivityDescription}
                 onChange={(e) => setNewExercise({
                   ...newExercise,
-                  description: e.target.value
+                  ActivityDescription: e.target.value
                 })}
               />
             </div>
@@ -183,7 +237,7 @@ const ExerciseList = () => {
               <button onClick={() => {
                 setShowPopup(false);
                 setEditingExercise(null);
-                setNewExercise({ exercise: '', description: '' });
+                setNewExercise({ Name: '', ActivityDescription: '' });
               }}>Cancel</button>
             </div>
           </div>

@@ -29,7 +29,7 @@ exerciseController.getUserExercise = async (req, res) => {
     }
 
     // Respond with the user's exercises
-    console.log('User exercises:', user.exercises); // debugging 
+    // console.log('User exercises:', user.exercises); // debugging 
 
     res.status(200).json({exercises : user.exercises});
 
@@ -43,7 +43,7 @@ exerciseController.createExercise = async (req, res) => {
   try {
     const { Name, ActivityDescription, date, notes } = req.body;
 
-    console.log('Creating exercise:', { Name, ActivityDescription, date, notes });
+    // console.log('Creating exercise:', { Name, ActivityDescription, date, notes });
 
     if (!Name|| !ActivityDescription) {
       return res.status(400).json({ error: 'Name and ActivityDescription are required' });
@@ -51,7 +51,7 @@ exerciseController.createExercise = async (req, res) => {
 
     const user = await User.findById(req.userId);
 
-    console.log('user from request:', user);
+    // console.log('user from request:', user);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });

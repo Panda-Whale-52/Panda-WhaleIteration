@@ -1,16 +1,11 @@
 import supertest from 'supertest';
-import {
-  beforeAll,
-  afterEach,
-  afterAll,
-  describe,
-  it,
-  expect,
-  vi,
-} from 'vitest';
+import { beforeAll, afterEach, afterAll, describe, it, expect } from 'vitest';
 import express from 'express';
 import userRoutes from '../routes/userRoutes.js';
 import * as db from './utils/db.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // creating Express app for testing
 const app = express();
@@ -42,18 +37,6 @@ afterAll(async () => {
   // closes database and server
   await db.closeDatabase();
   server.close();
-});
-
-// mocking a jsonwebtoken
-vi.mock('jsonwebtoken', () => {
-  return {
-    default: {
-      sign: vi.fn().mockReturnValue('test-token-123'),
-      verify: vi.fn().mockReturnValue({ id: 'test-id' }),
-    },
-    sign: vi.fn().mockReturnValue('test-token-123'),
-    verify: vi.fn().mockReturnValue({ id: 'test-id' }),
-  };
 });
 
 // REGISTRATION TESTING
@@ -149,8 +132,9 @@ describe('User Authentication Routes', () => {
 
       expect(loginResponse.status).toBe(200);
       expect(loginResponse.body.message).toBe('Login successful');
-      // expect(loginResponse.body.token).toBeDefined();
-      expect(loginResponse.body.token).toBe('test-token-123');
+      expect(loginResponse.body.token).toBeDefined();
+
+      expect(loginResponse.body.token.split('.').length).toBe(3);
     });
 
     it('returns error with invalid credentials', async () => {
@@ -170,13 +154,6 @@ describe('User Authentication Routes', () => {
  */
 
 // test routes
-// '/'
-// GET '/'
-// '/api/user'
-// POST '/api/user/register'              User registers for the app
-// POST '/api/user/login'                 User enters information to login to the app
-// GET '/api/user/me'                     User logsin to to the app --- AUTOMATICALLY DONE BY BROWSER AFTER DATA IS                                        VALIDATED?????
-
 // '/api/exercise'
 // GET '/api/exercise/'                   Is this request done as soon as the user lands in the tabs page?
 // POST '/api/exercise/'                  After user enters a new exercise - shouldn't this be /:id??
@@ -184,64 +161,6 @@ describe('User Authentication Routes', () => {
 // DELETE '/api/exercise/:id'
 // '/api/medications' -- NOT EVEN CREATED YET
 // '/api/stats'       -- NOT EVEN CREATED YET --- DITCH STATS LINK???
-
-// BASED ON BLOG POST MODEL
-// describe('GET /user', () => {
-//   it('responds with 200-status and json', async () => {
-//     const response = await request(app)
-//       .get('/user')
-//       .auth('username', 'password') // NEEDED???
-//       .set('Accept', 'application/json');
-//     expect(response.headers['Content-Type']).toMatch(/json/);
-//     expect(response.status).toEqual(200);
-//     expect(response.body.email).toEqual('foo@bar.com');
-//   });
-// });
-
-// BASED ON UNIT TEST MODULE
-// describe('Route integration', () => {
-//   describe('/', () => {
-//     describe('GET', () => {
-//       // Note that we return the evaluation of `request` here! It evaluates to
-//       // a promise, so Jest knows not to say this test passes until that
-//       // promise resolves. See https://jestjs.io/docs/en/asynchronous
-//       it('responds with 200 status and text/html content type', () => {
-//         return request(server)
-//           .get('/')
-//           .expect('Content-Type', /text\/html/)
-//           .expect(200);
-//       });
-//     });
-//   });
-
-//   describe('/markets', () => {
-//     describe('GET', () => {
-//       it('responds with 200 status and application/json content type', () => {
-//         return request(server)
-//           .get('/markets')
-//           .expect('Content-Type', /json/)
-//           .expect(200);
-//       });
-
-//       // For this test, you'll need to inspect the body of the response and
-//       // ensure it contains the markets list. Check the markets.dev.json file
-//       // in the dev database to get an idea of what shape you're expecting.
-//       it('markets from "DB" json are in body of response', () => {
-//         const response = request(server).get('/markets');
-//         expect(response.headers['Content-Type']).toMatch(/json/);
-//         // expect(response.body).toEqual([]);
-//       });
-//     });
-
-//     describe('PUT', () => {
-//       xit('responds with 200 status and application/json content type', () => {});
-
-//       xit('responds with the updated market list', () => {});
-
-//       xit('responds to invalid request with 400 status and error message in body', () => {});
-//     });
-//   });
-// });
 
 // Best practices for Testing OAuth: the KEY is to test our application's handling of OAuth flows
 // rather than testing the OAuth provider itself
