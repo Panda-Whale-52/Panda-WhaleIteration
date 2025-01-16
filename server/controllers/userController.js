@@ -68,10 +68,6 @@ userController.loginUser = async (req, res) => {
       expiresIn: '1h',
     });
 
-    const decoded = jwt.decode(token);
-console.log('Decoded JWT Payload:', decoded);
-
-
     return res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
     console.error('Error logging in user:', error);
