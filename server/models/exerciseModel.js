@@ -2,37 +2,20 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 const exerciseSchema = new Schema({
-  type: {
+  Name: {
     type: String,
     required: true,
-    enum: [
-      'Running',
-      'Walking',
-      'Cycling',
-      'Swimming',
-      'Bodybuilding',
-      'Other',
-    ],
+    // default: Date.now,
   },
-  distance: {
-    type: Number,
-    required: false, // Distance is optional (e.g., for bodybuilding or swimming)
-    min: 0,
-  },
-  duration: {
-    type: Number,
+  ActivityDescription: {
+    type: String,
     required: true,
-    min: 1,
+    // default: Date.now,
   },
   date: {
     type: Date,
     required: true,
     default: Date.now,
-  },
-  caloriesBurned: {
-    type: Number,
-    required: false,
-    min: 0,
   },
   notes: {
     type: String,
@@ -40,7 +23,7 @@ const exerciseSchema = new Schema({
     maxlength: 500,
   },
   userId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // Reference to the user who performed the exercise
     required: true,
   },
