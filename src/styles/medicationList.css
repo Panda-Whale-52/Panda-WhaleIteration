@@ -1,33 +1,20 @@
-.card {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-}
-
-.card-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.exercise-list-container {
+.medication-list-container {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
 }
 
-.exercise-list-header {
+.medication-list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.add-exercise-btn {
+.add-medication-btn {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #28a745; /* Different color from exercise button */
   color: white;
   border: none;
   border-radius: 4px;
@@ -35,23 +22,24 @@
   font-size: 16px;
 }
 
-.add-exercise-btn:hover {
-  background-color: #0056b3;
+.add-medication-btn:hover {
+  background-color: #218838;
 }
 
-.exercise-list {
+.medication-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
 
-.exercise-item {
+.medication-item {
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: white;
 }
 
+/* Reuse the same popup styles as exerciseList but with medication-specific colors */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -113,8 +101,8 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
 }
 
 .form-group textarea {
@@ -140,12 +128,12 @@
 }
 
 .popup-buttons button:first-child {
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
 }
 
 .popup-buttons button:first-child:hover {
-  background-color: #0056b3;
+  background-color: #218838;
   transform: translateY(-1px);
 }
 
@@ -157,4 +145,4 @@
 
 .popup-buttons button:last-child:hover {
   background-color: #e9ecef;
-}
+} 

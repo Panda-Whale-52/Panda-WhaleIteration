@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const SALT_WORK_FACTOR = 10;
+const Schema = mongoose.Schema;
 
 const userSchema = new mongoose.Schema({
   // For local auth
@@ -25,6 +26,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 8,
   },
+
+  exercises: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Exercise',
+      // default:[],
+    },],
 
   // For GitHub OAuth
   // githubId: {

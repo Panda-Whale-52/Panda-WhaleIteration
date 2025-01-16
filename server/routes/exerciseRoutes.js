@@ -4,15 +4,10 @@ import exerciseController from '../controllers/exerciseController.js';
 
 const router = express.Router();
 
-router.get('/', authenticate, exerciseController.getLatestExerciseForAllTypes);
-router.get(
-  '/details/:type',
-  authenticate,
-  exerciseController.getAllExercisesByType
-);
+router.get('/', authenticate, exerciseController.getUserExercise);  // -> Authenticate brings the userId when the tokens ("keys") matches
+router.post('/', authenticate, exerciseController.createExercise); // -> Authenticate brings the userId when the tokens ("keys") matches
 
-router.post('/', authenticate, exerciseController.createExercise);
-router.put('/:id', exerciseController.updateExercise);
-router.delete('/:id', exerciseController.deleteExercise);
+// router.put('/:id', exerciseController.updateExercise);
+// router.delete('/:id', exerciseController.deleteExercise);
 
 export default router;

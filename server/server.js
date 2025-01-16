@@ -6,10 +6,13 @@ import userRoutes from './routes/userRoutes.js';
 import oauthRoutes from './routes/oauthRoutes.js';
 import exerciseRoutes from './routes/exerciseRoutes.js';
 
-// import MONGO_URI from '.env';
-
 // PORT defined in .env or defaults to 3000
 const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+  console.error('MongoDB connection string is missing');
+}
 
 const app = express();
 
@@ -65,13 +68,13 @@ app.use((err, _req, res) => {
 });
 
 // // MongoDB connection string from .env
-const MONGO_URI =
-  'mongodb+srv://oliverafajardoucb1:AFrHIEwxaya01phE@cluster0.boihq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-// const MONGO_URI = process.env.MONGO_URI;
-if (!MONGO_URI) {
-  console.error(MONGO_URI);
-  process.exit(1);
-}
+// const MONGO_URI =
+//   'mongodb+srv://oliverafajardoucb1:AFrHIEwxaya01phE@cluster0.boihq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// // const MONGO_URI = process.env.MONGO_URI;
+// if (!MONGO_URI) {
+//   console.error(MONGO_URI);
+//   process.exit(1);
+// }
 
 // MongoClientOptions object to set the Stable API version
 // const clientOptions = {
@@ -96,12 +99,12 @@ async function startServer() {
   }
 }
 
-// Gracefully shut down server when you CTRL-C
-process.on('SIGINT', async () => {
-  console.log('Received SIGINT. Graceful shutdown start');
-  await mongoose.disconnect();
-  process.exit(0);
-});
+// // Gracefully shut down server when you CTRL-C
+// process.on('SIGINT', async () => {
+//   console.log('Received SIGINT. Graceful shutdown start');
+//   await mongoose.disconnect();
+//   process.exit(0);
+// });
 
 // Initiate the startup sequence
 // startServer();
